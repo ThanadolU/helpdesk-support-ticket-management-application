@@ -7,6 +7,7 @@ export async function addTicket(title: string, description: string, contactInfo:
     console.log(title);
     console.log(description);
     console.log(contactInfo);
+    
     await axios.post('http://localhost:8060/tickets/add', 
         {
             id: uuidv4(),
@@ -18,8 +19,8 @@ export async function addTicket(title: string, description: string, contactInfo:
             latestUpdateTimeStamp: createdTimeStamp
         }
     ).then((response) => {
-        console.error(response);
+        console.log(response);
     }).catch((error) => {
-        console.log(error);
+        console.error(error);
     })
 }

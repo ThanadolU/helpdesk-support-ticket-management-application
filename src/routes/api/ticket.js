@@ -42,17 +42,43 @@ var express = require("express");
 var database_service_1 = require("../../services/database.service");
 exports.ticketRouter = express.Router();
 exports.ticketRouter.use(express.json());
+exports.ticketRouter.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var allTickets, error_1;
+    var _a;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                _b.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, ((_a = database_service_1.collections.tickets) === null || _a === void 0 ? void 0 : _a.find({}).toArray())
+                    // console.log(allTickets)
+                ];
+            case 1:
+                allTickets = _b.sent();
+                // console.log(allTickets)
+                allTickets
+                    ? res.status(201).send(allTickets)
+                    : res.status(500).send("Fail to get all tickets.");
+                return [3 /*break*/, 3];
+            case 2:
+                error_1 = _b.sent();
+                console.error(error_1);
+                res.status(400).send(error_1);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); });
 exports.ticketRouter.post('/add', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var newTicket, result, error_1;
+    var newTicket, result, error_2;
     var _a;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
                 _b.trys.push([0, 2, , 3]);
                 // const timeStamp = new Date();
-                if (req.body.title == "" || req.body.description == "" || req.body.contactInfo == "") {
-                    res.status(400).send("You should fill in three things of ticket");
-                }
+                console.log(req.body.title);
+                console.log(req.body.description);
+                console.log(req.body.contactInfo);
                 newTicket = {
                     "id": req.body.id,
                     "title": req.body.title,
@@ -66,15 +92,49 @@ exports.ticketRouter.post('/add', function (req, res) { return __awaiter(void 0,
             case 1:
                 result = _b.sent();
                 result
-                    ? res.status(201).send("Successfully created a new ticket with id ".concat(result.insertedId))
+                    ? res.status(201).send("Successfully created a new ticket with id ".concat(result.insertedId, "."))
                     : res.status(500).send("Fail to create a new ticket.");
                 return [3 /*break*/, 3];
             case 2:
-                error_1 = _b.sent();
-                console.error(error_1);
-                res.status(400).send(error_1);
+                error_2 = _b.sent();
+                console.error(error_2);
+                res.status(400).send(error_2);
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];
+        }
+    });
+}); });
+exports.ticketRouter.put('/edit/:id', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var id, filter, updated, ticket, error_3;
+    var _a;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                id = req.params.id;
+                _b.label = 1;
+            case 1:
+                _b.trys.push([1, 3, , 4]);
+                filter = { id: id };
+                updated = {
+                    "title": req.body.title,
+                    "description": req.body.description,
+                    "contactInfo": req.body.contactInfo,
+                    "status": req.body.status,
+                    "latestUpdateTimeStamp": req.body.latestUpdateTimeStamp
+                };
+                return [4 /*yield*/, ((_a = database_service_1.collections.tickets) === null || _a === void 0 ? void 0 : _a.findOneAndUpdate(filter, { $set: updated }))];
+            case 2:
+                ticket = _b.sent();
+                ticket
+                    ? res.status(200).send("Successfully updated game with id ".concat(id))
+                    : res.status(304).send("Game with id: ".concat(id, " not updated"));
+                return [3 /*break*/, 4];
+            case 3:
+                error_3 = _b.sent();
+                console.error(error_3);
+                res.status(400).send(error_3);
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
         }
     });
 }); });
