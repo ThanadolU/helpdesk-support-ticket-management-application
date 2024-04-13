@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import Input from 'antd/es/input/Input';
-import TextArea from 'antd/es/input/TextArea';
-import { Button, Modal } from 'antd';
+import { Button } from 'antd';
 import { addTicket } from '../routes/client/AddTicket';
-import '../styles/ManageTicketPage.css';
 import Swal from 'sweetalert2';
 import { TicketInterface } from '../interfaces/Ticket';
 import { getAllTickets } from '../routes/client/GetTickets';
 import { editTicket } from '../routes/client/EditTicket';
+import TicketItem from '../components/TicketItem';
+import AddTicketModal from '../components/AddTicketModal';
+import EditTicketModal from '../components/EditTicketModal';
+import '../styles/ManageTicketPage.css';
 
 function Ticket() {
     const [isAddTicketModalOpen, setIsAddTicketModalOpen] = useState<boolean>(false);
@@ -23,7 +24,7 @@ function Ticket() {
         setIsAddTicketModalOpen(true);
     };
 
-    const handleAddTicket = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    const handleAddTicketSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         if (title !== "" && description !== "" && contactInformation !== "") {
             await addTicket(title, description, contactInformation);
@@ -53,7 +54,7 @@ function Ticket() {
         setIsEditTicketModalOpen(true);
     };
 
-    const handleEditTicket = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    const handleEditTicketSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         if (title !== "" && description !== "" && contactInformation !== "" && status !== "") {
             await editTicket(id, title, description, contactInformation, status);
@@ -81,8 +82,13 @@ function Ticket() {
         setIsEditTicketModalOpen(false);
     };
 
-    const getDate = (date: Date) => {
-        return new Date(date);
+    const handleEditTicket = (ticket: TicketInterface) => {
+        showEditTicketModal();
+        setId(ticket['id']);
+        setTitle(ticket['title']);
+        setDescription(ticket['description']);
+        setContactInformation(ticket['contactInfo']);
+        setStatus(ticket['status'])
     }
 
     useEffect(() => {
@@ -105,375 +111,84 @@ function Ticket() {
                 <h1>Helpdesk Ticket Management</h1>
                 <div className='ticket-board'>
                     <div className='column'>
-                        <h3>Pending</h3>
+                        <h3>
+                            Pending
+                            <Button className='add-item' type='primary'>Add item</Button>
+                        </h3>
                         <div className='ticket-column pending'>
                             {
-                                allTickets.map((ticket: TicketInterface) => {
-                                    if (ticket['status'] == 'pending') {
-                                        let createdTimeStamp = getDate(ticket['createdTimeStamp']);
-                                        let latestUpdateTimeStamp = getDate(ticket['latestUpdateTimeStamp']);
-                                        return (
-                                            <div key={ticket['id']} className='ticket'>
-                                                <h4>
-                                                    {ticket['title']}
-                                                    <Button className='edit-button' onClick={() => {
-                                                        showEditTicketModal();
-                                                        setId(ticket['id']);
-                                                        setTitle(ticket['title']);
-                                                        setDescription(ticket['description']);
-                                                        setContactInformation(ticket['contactInfo']);
-                                                        setStatus(ticket['status']);
-                                                        console.log(id)
-                                                    }}
-                                                    >
-                                                        Edit
-                                                    </Button>
-                                                </h4>
-                                                <p>Description: {ticket['description']}</p>
-                                                <p>Contact Information: {ticket['contactInfo']}</p>
-                                                <p>Status: {ticket['status']}</p>
-                                                <p>
-                                                    Created Date: {ticket['createdTimeStamp'] ? createdTimeStamp.toLocaleDateString() : ''}
-                                                </p>
-                                                <p>
-                                                    Created Time: {createdTimeStamp.getHours()}:{createdTimeStamp.getMinutes()}:{createdTimeStamp.getSeconds()}
-                                                </p>
-                                                <p>
-                                                    Latest Update Date: {ticket['latestUpdateTimeStamp'] ? latestUpdateTimeStamp.toLocaleDateString() : ''}
-                                                </p>
-                                                <p>
-                                                    Latest Update Time: {latestUpdateTimeStamp.getHours()}:{latestUpdateTimeStamp.getMinutes()}:{latestUpdateTimeStamp.getSeconds()}
-                                                </p>
-                                                <Modal open={isEditTicketModalOpen} onOk={handleEditTicket} onCancel={handleEditTicketCancel}>
-                                                    {
-
-                                                    }
-                                                    <h1 className='title'>Edit Ticket</h1>
-                                                    <div className='body'>
-                                                        <label>
-                                                            <span>Title:</span>
-                                                            <Input
-                                                                className='input'
-                                                                value={title}
-                                                                onChange={(e) => setTitle(e.target.value)}
-                                                            />
-                                                        </label>
-                                                        <label>
-                                                            <span>Description:</span>
-                                                            <TextArea
-                                                                className='input'
-                                                                value={description}
-                                                                onChange={(e) => setDescription(e.target.value)}
-                                                            />
-                                                        </label>
-                                                        <label>
-                                                            <span>Contact Information:</span>
-                                                            <TextArea
-                                                                className='input'
-                                                                value={contactInformation}
-                                                                onChange={(e) => setContactInformation(e.target.value)}
-                                                            />
-                                                        </label>
-                                                        <label>
-                                                            <span>Status</span>
-                                                            <TextArea
-                                                                className='input'
-                                                                value={status}
-                                                                onChange={(e) => setStatus(e.target.value)}
-                                                            />
-                                                        </label>
-                                                    </div>
-                                                </Modal>
-                                            </div>
-                                        )
-                                    } else {
-                                        return (
-                                            <>
-                                            </>
-                                        )
-                                    }
-                                })
+                                allTickets.map((ticket: TicketInterface) =>
+                                    ticket['status'] == 'pending' && <TicketItem key={ticket['id']} ticket={ticket} onEdit={handleEditTicket} />
+                                )
                             }
                         </div>
                     </div>
                     <div className='column'>
-                        <h3>Accepted</h3>
+                        <h3>
+                            Accepted
+                            <Button className='add-item' type='primary'>Add item</Button>
+                        </h3>
                         <div className='ticket-column accepted'>
                             {
-                                allTickets.map((ticket: TicketInterface) => {
-                                    if (ticket['status'] == 'accepted') {
-                                        let createdTimeStamp = getDate(ticket['createdTimeStamp']);
-                                        let latestUpdateTimeStamp = getDate(ticket['latestUpdateTimeStamp']);
-                                        return (
-                                            <div key={ticket['id']} className='ticket'>
-                                                <h4>
-                                                    {ticket['title']}
-                                                    <Button className='edit-button' onClick={() => {
-                                                        showEditTicketModal();
-                                                        setId(ticket['id']);
-                                                        setTitle(ticket['title']);
-                                                        setDescription(ticket['description']);
-                                                        setContactInformation(ticket['contactInfo']);
-                                                        setStatus(ticket['status']);
-                                                        console.log(id)
-                                                    }}>
-                                                        Edit
-                                                    </Button>
-                                                </h4>
-                                                <p>Description: {ticket['description']}</p>
-                                                <p>Contact Information: {ticket['contactInfo']}</p>
-                                                <p>Status: {ticket['status']}</p>
-                                                <p>
-                                                    Created Date: {ticket['createdTimeStamp'] ? createdTimeStamp.toLocaleDateString() : ''}
-                                                </p>
-                                                <p>
-                                                    Created Time: {createdTimeStamp.getHours()}:{createdTimeStamp.getMinutes()}:{createdTimeStamp.getSeconds()}
-                                                </p>
-                                                <p>
-                                                    Latest Update Date: {ticket['latestUpdateTimeStamp'] ? latestUpdateTimeStamp.toLocaleDateString() : ''}
-                                                </p>
-                                                <p>
-                                                    Latest Update Time: {latestUpdateTimeStamp.getHours()}:{latestUpdateTimeStamp.getMinutes()}:{latestUpdateTimeStamp.getSeconds()}
-                                                </p>
-                                                <Modal open={isEditTicketModalOpen} onOk={handleEditTicket} onCancel={handleEditTicketCancel}>
-                                                    {
-
-                                                    }
-                                                    <h1 className='title'>Edit Ticket</h1>
-                                                    <div className='body'>
-                                                        <label>
-                                                            <span>Title:</span>
-                                                            <Input
-                                                                className='input'
-                                                                value={title}
-                                                                onChange={(e) => setTitle(e.target.value)}
-                                                            />
-                                                        </label>
-                                                        <label>
-                                                            <span>Description:</span>
-                                                            <TextArea
-                                                                className='input'
-                                                                value={description}
-                                                                onChange={(e) => setDescription(e.target.value)}
-                                                            />
-                                                        </label>
-                                                        <label>
-                                                            <span>Contact Information:</span>
-                                                            <TextArea
-                                                                className='input'
-                                                                value={contactInformation}
-                                                                onChange={(e) => setContactInformation(e.target.value)}
-                                                            />
-                                                        </label>
-                                                        <label>
-                                                            <span>Status</span>
-                                                            <TextArea
-                                                                className='input'
-                                                                value={status}
-                                                                onChange={(e) => setStatus(e.target.value)}
-                                                            />
-                                                        </label>
-                                                    </div>
-                                                </Modal>
-                                            </div>
-                                        )
-                                    } else {
-                                        return (
-                                            <>
-                                            </>
-                                        )
-                                    }
-                                })
+                                allTickets.map((ticket: TicketInterface) =>
+                                    ticket['status'] == 'accepted' && <TicketItem key={ticket['id']} ticket={ticket} onEdit={handleEditTicket} />
+                                )
                             }
                         </div>
                     </div>
                     <div className='column'>
-                        <h3>Resolved</h3>
+                        <h3>
+                            Resolved
+                            <Button className='add-item' type='primary'>Add item</Button>
+                        </h3>
                         <div className='ticket-column resolved'>
                             {
-                                allTickets.map((ticket: TicketInterface) => {
-                                    if (ticket['status'] == 'resolved') {
-                                        let createdTimeStamp = getDate(ticket['createdTimeStamp']);
-                                        let latestUpdateTimeStamp = getDate(ticket['latestUpdateTimeStamp']);
-                                        return (
-                                            <div key={ticket['id']} className='ticket'>
-                                                <h4>
-                                                    {ticket['title']}
-                                                    <Button className='edit-button' onClick={() => {
-                                                        showEditTicketModal();
-                                                        setId(ticket['id']);
-                                                        setTitle(ticket['title']);
-                                                        setDescription(ticket['description']);
-                                                        setContactInformation(ticket['contactInfo']);
-                                                        setStatus(ticket['status']);
-                                                        console.log(id)
-                                                    }}
-                                                    >
-                                                        Edit
-                                                    </Button>
-                                                </h4>
-                                                <p>Description: {ticket['description']}</p>
-                                                <p>Contact Information: {ticket['contactInfo']}</p>
-                                                <p>Status: {ticket['status']}</p>
-                                                <p>
-                                                    Created Date: {ticket['createdTimeStamp'] ? createdTimeStamp.toLocaleDateString() : ''}
-                                                </p>
-                                                <p>
-                                                    Created Time: {createdTimeStamp.getHours()}:{createdTimeStamp.getMinutes()}:{createdTimeStamp.getSeconds()}
-                                                </p>
-                                                <p>
-                                                    Latest Update Date: {ticket['latestUpdateTimeStamp'] ? latestUpdateTimeStamp.toLocaleDateString() : ''}
-                                                </p>
-                                                <p>
-                                                    Latest Update Time: {latestUpdateTimeStamp.getHours()}:{latestUpdateTimeStamp.getMinutes()}:{latestUpdateTimeStamp.getSeconds()}
-                                                </p>
-                                                <Modal open={isEditTicketModalOpen} onOk={handleEditTicket} onCancel={handleEditTicketCancel}>
-                                                    {
-
-                                                    }
-                                                    <h1 className='title'>Edit Ticket</h1>
-                                                    <div className='body'>
-                                                        <label>
-                                                            <span>Title:</span>
-                                                            <Input
-                                                                className='input'
-                                                                value={title}
-                                                                onChange={(e) => setTitle(e.target.value)}
-                                                            />
-                                                        </label>
-                                                        <label>
-                                                            <span>Description:</span>
-                                                            <TextArea
-                                                                className='input'
-                                                                value={description}
-                                                                onChange={(e) => setDescription(e.target.value)}
-                                                            />
-                                                        </label>
-                                                        <label>
-                                                            <span>Contact Information:</span>
-                                                            <TextArea
-                                                                className='input'
-                                                                value={contactInformation}
-                                                                onChange={(e) => setContactInformation(e.target.value)}
-                                                            />
-                                                        </label>
-                                                        <label>
-                                                            <span>Status</span>
-                                                            <TextArea
-                                                                className='input'
-                                                                value={status}
-                                                                onChange={(e) => setStatus(e.target.value)}
-                                                            />
-                                                        </label>
-                                                    </div>
-                                                </Modal>
-                                            </div>
-                                        )
-                                    } else {
-                                        return (
-                                            <>
-                                            </>
-                                        )
-                                    }
-                                })
+                                allTickets.map((ticket: TicketInterface) =>
+                                    ticket['status'] == 'resolved' && <TicketItem key={ticket['id']} ticket={ticket} onEdit={handleEditTicket} />
+                                )
                             }
                         </div>
                     </div>
                     <div className='column'>
-                        <h3>Rejected</h3>
+                        <h3>
+                            Rejected
+                            <Button className='add-item' type='primary'>Add item</Button>
+                        </h3>
                         <div className='ticket-column rejected'>
                             {
-                                allTickets.map((ticket: TicketInterface) => {
-                                    if (ticket['status'] == 'rejected') {
-                                        let createdTimeStamp = getDate(ticket['createdTimeStamp']);
-                                        let latestUpdateTimeStamp = getDate(ticket['latestUpdateTimeStamp']);
-                                        return (
-                                            <div key={ticket['id']} className='ticket'>
-                                                <h4>
-                                                    {ticket['title']}
-                                                    <Button className='edit-button' onClick={() => {
-                                                        showEditTicketModal();
-                                                        setId(ticket['id']);
-                                                        setTitle(ticket['title']);
-                                                        setDescription(ticket['description']);
-                                                        setContactInformation(ticket['contactInfo']);
-                                                        setStatus(ticket['status']);
-                                                        console.log(id)
-                                                    }}
-                                                    >
-                                                        Edit
-                                                    </Button>
-                                                </h4>
-                                                <p>Description: {ticket['description']}</p>
-                                                <p>Contact Information: {ticket['contactInfo']}</p>
-                                                <p>Status: {ticket['status']}</p>
-                                                <p>
-                                                    Created Date: {ticket['createdTimeStamp'] ? createdTimeStamp.toLocaleDateString() : ''}
-                                                </p>
-                                                <p>
-                                                    Created Time: {createdTimeStamp.getHours()}:{createdTimeStamp.getMinutes()}:{createdTimeStamp.getSeconds()}
-                                                </p>
-                                                <p>
-                                                    Latest Update Date: {ticket['latestUpdateTimeStamp'] ? latestUpdateTimeStamp.toLocaleDateString() : ''}
-                                                </p>
-                                                <p>
-                                                    Latest Update Time: {latestUpdateTimeStamp.getHours()}:{latestUpdateTimeStamp.getMinutes()}:{latestUpdateTimeStamp.getSeconds()}
-                                                </p>
-                                                <Modal open={isEditTicketModalOpen} onOk={handleEditTicket} onCancel={handleEditTicketCancel}>
-                                                    {
-
-                                                    }
-                                                    <h1 className='title'>Edit Ticket</h1>
-                                                    <div className='body'>
-                                                        <label>
-                                                            <span>Title:</span>
-                                                            <Input
-                                                                className='input'
-                                                                value={title}
-                                                                onChange={(e) => setTitle(e.target.value)}
-                                                            />
-                                                        </label>
-                                                        <label>
-                                                            <span>Description:</span>
-                                                            <TextArea
-                                                                className='input'
-                                                                value={description}
-                                                                onChange={(e) => setDescription(e.target.value)}
-                                                            />
-                                                        </label>
-                                                        <label>
-                                                            <span>Contact Information:</span>
-                                                            <TextArea
-                                                                className='input'
-                                                                value={contactInformation}
-                                                                onChange={(e) => setContactInformation(e.target.value)}
-                                                            />
-                                                        </label>
-                                                        <label>
-                                                            <span>Status</span>
-                                                            <TextArea
-                                                                className='input'
-                                                                value={status}
-                                                                onChange={(e) => setStatus(e.target.value)}
-                                                            />
-                                                        </label>
-                                                    </div>
-                                                </Modal>
-                                            </div>
-                                        )
-                                    } else {
-                                        return (
-                                            <>
-                                            </>
-                                        )
-                                    }
-                                })
+                                allTickets.map((ticket: TicketInterface) =>
+                                    ticket['status'] == 'rejected' && <TicketItem key={ticket['id']} ticket={ticket} onEdit={handleEditTicket} />
+                                )
                             }
                         </div>
                     </div>
                 </div>
-                <Button className='add-ticket-button' onClick={showAddTicketModal}>Add Ticket</Button>
-                <Modal open={isAddTicketModalOpen} onOk={handleAddTicket} onCancel={handleAddTicketCancel}>
+                <Button className='add-ticket-button' onClick={showAddTicketModal} type='primary'>Add Ticket</Button>
+                <AddTicketModal 
+                    open={isAddTicketModalOpen}
+                    onCancel={handleAddTicketCancel}
+                    title={title}
+                    setTitle={setTitle}
+                    description={description}
+                    setDescription={setDescription}
+                    contactInfo={contactInformation}
+                    setContactInfo={setContactInformation}
+                    handleAddSubmit={handleAddTicketSubmit}
+                />
+                <EditTicketModal
+                    open={isEditTicketModalOpen}
+                    onCancel={handleEditTicketCancel}
+                    title={title}
+                    setTitle={setTitle}
+                    description={description}
+                    setDescription={setDescription}
+                    contactInfo={contactInformation}
+                    setContactInfo={setContactInformation}
+                    status={status}
+                    setStatus={setStatus}
+                    handleEditSubmit={handleEditTicketSubmit}
+                />
+                {/* <Modal open={isAddTicketModalOpen} onOk={handleAddTicketSubmit} onCancel={handleAddTicketCancel} footer={null}>
                     <h1 className='title'>Add New Ticket</h1>
                     <div className='body'>
                         <label>
@@ -501,7 +216,44 @@ function Ticket() {
                             />
                         </label>
                     </div>
-                </Modal>
+                </Modal> */}
+                {/* <Modal open={isEditTicketModalOpen} onOk={handleEditTicketSubmit} onCancel={handleEditTicketCancel}>
+                    <h1 className='title'>Edit Ticket</h1>
+                    <div className='body'>
+                        <label>
+                            <span>Title:</span>
+                            <Input
+                                className='input'
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)}
+                            />
+                        </label>
+                        <label>
+                            <span>Description:</span>
+                            <TextArea
+                                className='input'
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                            />
+                        </label>
+                        <label>
+                            <span>Contact Information:</span>
+                            <TextArea
+                                className='input'
+                                value={contactInformation}
+                                onChange={(e) => setContactInformation(e.target.value)}
+                            />
+                        </label>
+                        <label>
+                            <span>Status</span>
+                            <TextArea
+                                className='input'
+                                value={status}
+                                onChange={(e) => setStatus(e.target.value)}
+                            />
+                        </label>
+                    </div>
+                </Modal> */}
             </div>
         </>
     )

@@ -30,6 +30,10 @@
     /* overflow-y: scroll; */
 }
 
+.ticket-board .add-item {
+    margin-left: 7vw;
+}
+
 .ticket-board .ticket-column {
     margin-left: 1vw;
     margin-right: 1vw;
