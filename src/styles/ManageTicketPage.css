@@ -1,0 +1,85 @@
+.add-ticket {
+    /* margin-left: auto;
+    margin-right: auto; 
+    */
+    margin: 0 auto;
+    width: 90vw;
+    /* height: 82vh; */
+    /* background-color: aliceblue; */
+}
+
+.add-ticket .ticket-board {
+    display: flex;
+}
+
+.add-ticket h1 {
+    margin-top: 5vh;
+    margin-left: 2vw;
+}
+
+.add-ticket h3 {
+    margin-left: 2vw;
+}
+
+.add-ticket .column {
+    width: 30vw;
+    height: 78vh;
+    margin-left: 1vw;
+    margin-right: 1vw;
+    background-color: white;
+    /* overflow-y: scroll; */
+}
+
+.ticket-board .ticket-column {
+    margin-left: 1vw;
+    margin-right: 1vw;
+    height: 68vh;
+    overflow-y: scroll;
+    background-color: azure;
+}
+
+/* .add-ticket .body {
+    display: block;
+} */
+
+/* .add-ticket .body label {
+    display: block;
+}
+
+.add-ticket .body label span {
+    display: inline-block;
+    text-align: right;
+} */
+
+/* .add-ticket .body input {
+    float: right;
+} */
+
+/* .add-ticket .body label {
+    display: inline-block;
+    text-align: right;
+} */
+
+
+.add-ticket .add-ticket-button {
+    margin-top: 2vh;
+}
+
+.ticket-column .ticket {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1vh;
+    margin-bottom: 2vh;
+    padding-top: 0.5vh;
+    padding-bottom: 0.5vh;
+    padding-left: 1vw;
+    /* padding-right: 1vw; */
+    border-radius: 5%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    width: 16vw;
+    background-color: whitesmoke;
+}
+
+.ticket-column .ticket .edit-button {
+    margin-left: 10px;
+}
