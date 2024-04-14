@@ -13,8 +13,17 @@
 }
 
 .add-ticket h1 {
+    text-align: center;
     margin-top: 5vh;
+    margin-bottom: 3vh;
     margin-left: 2vw;
+}
+
+.ticket-board .column-header {
+    /* border: 1px solid; */
+    margin-top: 1vh;
+    display: flex;
+    align-items: center;
 }
 
 .add-ticket h3 {
@@ -31,7 +40,8 @@
 }
 
 .ticket-board .add-item {
-    margin-left: 6vw;
+    margin-left: auto;
+    margin-right: 2vw;
 }
 
 .ticket-board .ticket-column {
@@ -92,6 +102,12 @@
     /* cursor: move; */
 }
 
+.ticket-column .ticket .ticket-header {
+    display: flex;
+    align-items: center;
+}
+
 .ticket-column .ticket .edit-button {
-    margin-left: 10px;
+    margin-left: auto;
+    margin-right: 1vw;
 }

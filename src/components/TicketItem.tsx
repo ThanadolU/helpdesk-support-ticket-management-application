@@ -25,10 +25,10 @@ function TicketItem({ ticket, onEdit }: { ticket: TicketInterface, onEdit: (tick
                 handleDragStart(e);
             }}
         >
-            <h4>
-                {ticket['title']}
+            <div className='ticket-header'>
+                <h4>{ticket['title']}</h4>
                 <Button className='edit-button' onClick={() => onEdit(ticket)}>Edit</Button>
-            </h4>
+            </div>
             <p>Description: {ticket['description']}</p>
             <p>Contact Information: {ticket['contactInfo']}</p>
             <p>Status: {ticket['status']}</p>
