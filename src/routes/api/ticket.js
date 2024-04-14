@@ -69,7 +69,7 @@ exports.ticketRouter.get('/', function (req, res) { return __awaiter(void 0, voi
     });
 }); });
 exports.ticketRouter.post('/add', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var newTicket, result, error_2;
+    var status_1, newTicket, result, error_2;
     var _a;
     return __generator(this, function (_b) {
         switch (_b.label) {
@@ -79,12 +79,14 @@ exports.ticketRouter.post('/add', function (req, res) { return __awaiter(void 0,
                 console.log(req.body.title);
                 console.log(req.body.description);
                 console.log(req.body.contactInfo);
+                console.log(req.body.status);
+                status_1 = req.body.status == "" ? "pending" : req.body.status;
                 newTicket = {
                     "id": req.body.id,
                     "title": req.body.title,
                     "description": req.body.description,
                     "contactInfo": req.body.contactInfo,
-                    "status": req.body.status,
+                    "status": status_1,
                     "createdTimeStamp": req.body.createdTimeStamp,
                     "latestUpdateTimeStamp": req.body.latestUpdateTimeStamp
                 };

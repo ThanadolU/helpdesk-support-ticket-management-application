@@ -2,7 +2,7 @@ import axios from 'axios';
 import { v4 as uuidv4} from 'uuid';
 import { TicketStatus } from '../../interfaces/TicketStatus';
 
-export async function addTicket(title: string, description: string, contactInfo: string) {
+export async function addTicket(title: string, description: string, contactInfo: string, status: string) {
     const createdTimeStamp = new Date();
     console.log(title);
     console.log(description);
@@ -14,7 +14,7 @@ export async function addTicket(title: string, description: string, contactInfo:
             title: title,
             description: description,
             contactInfo: contactInfo,
-            status: TicketStatus.PENDING,
+            status: status,
             createdTimeStamp: createdTimeStamp,
             latestUpdateTimeStamp: createdTimeStamp
         }

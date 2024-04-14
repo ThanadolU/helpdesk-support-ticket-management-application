@@ -9,6 +9,7 @@ import TicketItem from '../components/TicketItem';
 import AddTicketModal from '../components/AddTicketModal';
 import EditTicketModal from '../components/EditTicketModal';
 import '../styles/ManageTicketPage.css';
+import { TicketStatus } from '../interfaces/TicketStatus';
 
 function Ticket() {
     const [isAddTicketModalOpen, setIsAddTicketModalOpen] = useState<boolean>(false);
@@ -27,7 +28,7 @@ function Ticket() {
     const handleAddTicketSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         if (title !== "" && description !== "" && contactInformation !== "") {
-            await addTicket(title, description, contactInformation);
+            await addTicket(title, description, contactInformation, status);
             Swal.fire({
                 title: "Add success",
                 text: "Adding new ticket successful",
@@ -113,7 +114,14 @@ function Ticket() {
                     <div className='column'>
                         <h3>
                             Pending
-                            <Button className='add-item' type='primary'>Add item</Button>
+                            <Button className='add-item' 
+                                onClick={() => {
+                                    setIsAddTicketModalOpen(true); 
+                                    setStatus(TicketStatus.PENDING);
+                                    }} 
+                                type='primary'>
+                                    Add item
+                            </Button>
                         </h3>
                         <div className='ticket-column pending'>
                             {
@@ -126,7 +134,14 @@ function Ticket() {
                     <div className='column'>
                         <h3>
                             Accepted
-                            <Button className='add-item' type='primary'>Add item</Button>
+                            <Button className='add-item' 
+                                onClick={() => {
+                                    setIsAddTicketModalOpen(true); 
+                                    setStatus(TicketStatus.ACCEPTED);
+                                    }} 
+                                type='primary'>
+                                    Add item
+                            </Button>
                         </h3>
                         <div className='ticket-column accepted'>
                             {
@@ -139,7 +154,14 @@ function Ticket() {
                     <div className='column'>
                         <h3>
                             Resolved
-                            <Button className='add-item' type='primary'>Add item</Button>
+                            <Button className='add-item' 
+                                onClick={() => {
+                                    setIsAddTicketModalOpen(true); 
+                                    setStatus(TicketStatus.RESOLVED);
+                                    }} 
+                                type='primary'>
+                                    Add item
+                            </Button>
                         </h3>
                         <div className='ticket-column resolved'>
                             {
@@ -152,7 +174,14 @@ function Ticket() {
                     <div className='column'>
                         <h3>
                             Rejected
-                            <Button className='add-item' type='primary'>Add item</Button>
+                            <Button className='add-item' 
+                                onClick={() => {
+                                    setIsAddTicketModalOpen(true); 
+                                    setStatus(TicketStatus.REJECTED);
+                                    }} 
+                                type='primary'>
+                                    Add item
+                            </Button>
                         </h3>
                         <div className='ticket-column rejected'>
                             {
