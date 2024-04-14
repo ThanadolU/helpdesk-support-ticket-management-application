@@ -1,30 +1,21 @@
-# React + TypeScript + Vite
+# Helpdesk Ticket Management
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Installation
+1) You need to run this command to install all dependencies
+    ```
+    npm install or npm i
+    ``` 
+2) I already prepare a template for env inside file `sample.env`. It has every variables that you need to setup before you can run this application.
 
-Currently, two official plugins are available:
+    Note: The database I used is MongoDB.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+3) I already setup commands for you.
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+    3.1) Command for run application:
+      ```
+      npm run dev
+      ```
+    3.2) Command for run API:
+      ```
+      npm run start
+      ```
