@@ -10,11 +10,16 @@ import AddTicketModal from '../components/AddTicketModal';
 import EditTicketModal from '../components/EditTicketModal';
 import '../styles/ManageTicketPage.css';
 import { TicketStatus } from '../interfaces/TicketStatus';
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 
 function Ticket() {
     const [isAddTicketModalOpen, setIsAddTicketModalOpen] = useState<boolean>(false);
     const [isEditTicketModalOpen, setIsEditTicketModalOpen] = useState<boolean>(false);
     const [allTickets, setAllTickets] = useState<TicketInterface[]>([]);
+    const [pendingTickets, setPendingTickets] = useState<TicketInterface[]>([]);
+    const [acceptedTickets, setAcceptedTickets] = useState<TicketInterface[]>([]);
+    const [resolvedTickets, setResolvedTickets] = useState<TicketInterface[]>([]);
+    const [rejectedTickets, setRejectedTickets] = useState<TicketInterface[]>([]);
     const [id, setId] = useState<string>("");
     const [title, setTitle] = useState<string>("");
     const [description, setDescription] = useState<string>("");
@@ -34,12 +39,29 @@ function Ticket() {
     const handleAddTicketSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         if (title !== "" && description !== "" && contactInformation !== "") {
-            await addTicket(title, description, contactInformation, status);
+            const newTicket = await addTicket(title, description, contactInformation, status);
             Swal.fire({
                 title: "Add success",
                 text: "Adding new ticket successful",
                 icon: "success"
             })
+            switch (status) {
+                case TicketStatus.PENDING:
+                    setPendingTickets([...pendingTickets, newTicket]);
+                    break;
+                case TicketStatus.ACCEPTED:
+                    setAcceptedTickets([...acceptedTickets, newTicket]);
+                    break;
+                case TicketStatus.RESOLVED:
+                    setResolvedTickets([...resolvedTickets, newTicket]);
+                    break;
+                case TicketStatus.REJECTED:
+                    setRejectedTickets([...rejectedTickets, newTicket]);
+                    break;
+                default:
+                    break;
+            }
+            console.log(pendingTickets)
         } else {
             Swal.fire({
                 title: "Error add new ticket",
@@ -114,14 +136,69 @@ function Ticket() {
       
         // Update the state with the new set of tickets
         setAllTickets([...updatedTickets, droppedTicket]);
+
+        switch (status) {
+            case TicketStatus.PENDING:
+                setPendingTickets([...pendingTickets, droppedTicket]);
+                break;
+            case TicketStatus.ACCEPTED:
+                setAcceptedTickets([...acceptedTickets, droppedTicket]);
+                break;
+            case TicketStatus.RESOLVED:
+                setResolvedTickets([...resolvedTickets, droppedTicket]);
+                break;
+            case TicketStatus.REJECTED:
+                setRejectedTickets([...rejectedTickets, droppedTicket]);
+                break;
+            default:
+                break;
+        }
+
         editTicket(droppedTicket.id, droppedTicket.title, droppedTicket.description, droppedTicket.contactInfo, status)
     }
+
+    // const onDragEnd = (result) => {
+    //     if (!result.destination) {
+    //         return;
+    //     }
+        
+    //     const { source, destination } = result;
+    //     const draggedTicket = allTickets[source.index];
+    //     const updatedTickets = [...allTickets];
+    //     updatedTickets.splice(source.index, 1);
+    //     updatedTickets.splice(destination.index, 0, draggedTicket);
+        
+    //     // Update ticket status based on column ID
+    //     let status = TicketStatus.PENDING;
+    //     switch (destination.droppableId) {
+    //         case 'accepted':
+    //             status = TicketStatus.ACCEPTED;
+    //             break;
+    //         case 'resolved':
+    //             status = TicketStatus.RESOLVED;
+    //             break;
+    //         case 'rejected':
+    //             status = TicketStatus.REJECTED;
+    //             break;
+    //         default:
+    //             status = TicketStatus.PENDING;
+    //     }
+
+    //     // Update ticket status in the backend
+    //     editTicket(draggedTicket.id, draggedTicket.title, draggedTicket.description, draggedTicket.contactInfo, status);
+
+    //     setAllTickets(updatedTickets);
+    // };
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const tickets = await getAllTickets();
                 setAllTickets(tickets);
+                setPendingTickets(sortedTickets.filter((ticket: TicketInterface) => ticket['status'] == 'pending'));
+                setAcceptedTickets(sortedTickets.filter((ticket: TicketInterface) => ticket['status'] == 'accepted'));
+                setResolvedTickets(sortedTickets.filter((ticket: TicketInterface) => ticket['status'] == 'resolved'));
+                setRejectedTickets(sortedTickets.filter((ticket: TicketInterface) => ticket['status'] == 'rejected'));
             } catch (error) {
                 console.error('Error fetching tickets:', error);
             }
@@ -135,29 +212,46 @@ function Ticket() {
                 <h1>Helpdesk Ticket Management</h1>
                 <div className='ticket-board'>
                     <div className='column'>
-                        <div className='column-header'>
-                            <h3>Pending</h3>
-                            <Button className='add-item' 
-                                onClick={() => {
-                                    setIsAddTicketModalOpen(true); 
-                                    setStatus(TicketStatus.PENDING);
-                                    }} 
-                                type='primary'>
-                                    Add item
-                            </Button>
-                        </div>
-                        <div className='ticket-column pending' 
-                            onDragOver={(e) => handleOnDragOver(e)} 
-                            onDrop={(e) => handleOnDrop(e, TicketStatus.PENDING)}
-                        >
-                            {
-                                sortedTickets
-                                    .filter((ticket: TicketInterface) => ticket['status'] == TicketStatus.PENDING)
-                                    .map((ticket: TicketInterface) =>
-                                        <TicketItem key={ticket['id']} ticket={ticket} onEdit={handleEditTicket} />
-                                )
-                            }
-                        </div>
+                        {/* <DragDropContext onDragEnd={onDragEnd}> */}
+                            <div className='column-header'>
+                                <h3>Pending</h3>
+                                <Button className='add-item' 
+                                    onClick={() => {
+                                        setIsAddTicketModalOpen(true); 
+                                        setStatus(TicketStatus.PENDING);
+                                        }} 
+                                    type='primary'>
+                                        Add item
+                                </Button>
+                            </div>
+                            <div className='ticket-column pending' 
+                                onDragOver={(e) => handleOnDragOver(e)} 
+                                onDrop={(e) => handleOnDrop(e, TicketStatus.PENDING)}
+                            >
+                            {/* <Droppable droppableId="all-tickets" direction="horizontal">
+                                {(provided) => (
+                                <div {...provided.droppableProps} ref={provided.innerRef}> */}
+                                {
+                                    pendingTickets
+                                        // .filter((ticket: TicketInterface) => ticket['status'] == TicketStatus.PENDING)
+                                        .map((ticket: TicketInterface,  index: number) =>
+                                            // <Draggable key={ticket['id']} draggableId={ticket['id']} index={index}>
+                                            // {(provided) => (
+                                            //     <div
+                                            //         ref={provided.innerRef}
+                                            //         {...provided.draggableProps}
+                                            //         {...provided.dragHandleProps}
+                                            //     >
+                                                    <TicketItem key={ticket.id} ticket={ticket} onEdit={handleEditTicket} />
+                                            //     </div>
+                                            // )}
+                                            // </Draggable>
+                                    )
+                                }
+                            </div>
+                                {/* )}
+                            </Droppable>
+                        </DragDropContext> */}
                     </div>
                     <div className='column'>
                         <div className='column-header'>
@@ -176,8 +270,8 @@ function Ticket() {
                             onDrop={(e) => handleOnDrop(e, TicketStatus.ACCEPTED)}
                         >
                             {
-                                sortedTickets
-                                    .filter((ticket: TicketInterface) => ticket['status'] == TicketStatus.ACCEPTED)
+                                acceptedTickets
+                                    // .filter((ticket: TicketInterface) => ticket['status'] == TicketStatus.ACCEPTED)
                                     .map((ticket: TicketInterface) =>
                                         <TicketItem key={ticket['id']} ticket={ticket} onEdit={handleEditTicket} />
                                 )
@@ -201,8 +295,8 @@ function Ticket() {
                             onDrop={(e) => handleOnDrop(e, TicketStatus.RESOLVED)}
                         >
                             {
-                                sortedTickets
-                                    .filter((ticket: TicketInterface) => ticket['status'] == TicketStatus.RESOLVED)
+                                resolvedTickets
+                                    // .filter((ticket: TicketInterface) => ticket['status'] == TicketStatus.RESOLVED)
                                     .map((ticket: TicketInterface) =>
                                         <TicketItem key={ticket['id']} ticket={ticket} onEdit={handleEditTicket} />
                                 )
@@ -226,8 +320,8 @@ function Ticket() {
                             onDrop={(e) => handleOnDrop(e, TicketStatus.REJECTED)}
                         >
                             {
-                                sortedTickets
-                                    .filter((ticket: TicketInterface) => ticket['status'] == TicketStatus.REJECTED)
+                                rejectedTickets
+                                    // .filter((ticket: TicketInterface) => ticket['status'] == TicketStatus.REJECTED)
                                     .map((ticket: TicketInterface) =>
                                         <TicketItem key={ticket['id']} ticket={ticket} onEdit={handleEditTicket} />
                                 )
