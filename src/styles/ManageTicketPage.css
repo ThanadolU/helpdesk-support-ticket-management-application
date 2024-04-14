@@ -31,13 +31,13 @@
 }
 
 .ticket-board .add-item {
-    margin-left: 7vw;
+    margin-left: 6vw;
 }
 
 .ticket-board .ticket-column {
     margin-left: 1vw;
     margin-right: 1vw;
-    height: 68vh;
+    height: 66vh;
     overflow-y: scroll;
     background-color: azure;
 }
@@ -67,6 +67,7 @@
 
 .add-ticket .add-ticket-button {
     margin-top: 2vh;
+    margin-left: 1vw;
 }
 
 .ticket-column .ticket {
@@ -82,6 +83,7 @@
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     width: 16vw;
     background-color: whitesmoke;
+    /* cursor: move; */
 }
 
 .ticket-column .ticket .edit-button {

@@ -9,6 +9,7 @@ export const ticketRouter = express.Router();
 ticketRouter.use(express.json())
 
 ticketRouter.get('/', async (req: Request, res: Response) => {
+    console.log(req.url);
     try {
         const allTickets = await collections.tickets?.find({}).toArray()
         // console.log(allTickets)

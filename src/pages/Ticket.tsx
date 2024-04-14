@@ -92,6 +92,25 @@ function Ticket() {
         setStatus(ticket['status'])
     }
 
+    function handleOnDragOver(e: React.DragEvent) {
+        e.preventDefault();
+    }
+
+    function handleOnDrop(e: React.DragEvent, status: string) {
+        e.preventDefault()
+
+        const droppedTicket = JSON.parse(e.dataTransfer.getData('ticket'));
+        // Update the status of the dropped ticket
+        const updatedTickets = allTickets.filter((ticket) => ticket.id !== droppedTicket.id);
+
+        // Update the status of the dropped ticket
+        droppedTicket['status'] = status;
+      
+        // Update the state with the new set of tickets
+        setAllTickets([...updatedTickets, droppedTicket]);
+        editTicket(droppedTicket.id, droppedTicket.title, droppedTicket.description, droppedTicket.contactInfo, status)
+    }
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -99,12 +118,10 @@ function Ticket() {
                 setAllTickets(tickets);
             } catch (error) {
                 console.error('Error fetching tickets:', error);
-                // Handle error appropriately, e.g., show a message to the user
             }
         };
         fetchData();
-        console.log(allTickets);
-    }, []);
+    });
 
     return (
         <>
@@ -123,10 +140,15 @@ function Ticket() {
                                     Add item
                             </Button>
                         </h3>
-                        <div className='ticket-column pending'>
+                        <div className='ticket-column pending' 
+                            onDragOver={(e) => handleOnDragOver(e)} 
+                            onDrop={(e) => handleOnDrop(e, TicketStatus.PENDING)}
+                        >
                             {
-                                allTickets.map((ticket: TicketInterface) =>
-                                    ticket['status'] == 'pending' && <TicketItem key={ticket['id']} ticket={ticket} onEdit={handleEditTicket} />
+                                allTickets
+                                    .filter((ticket: TicketInterface) => ticket['status'] == TicketStatus.PENDING)
+                                    .map((ticket: TicketInterface) =>
+                                        <TicketItem key={ticket['id']} ticket={ticket} onEdit={handleEditTicket} />
                                 )
                             }
                         </div>
@@ -143,10 +165,15 @@ function Ticket() {
                                     Add item
                             </Button>
                         </h3>
-                        <div className='ticket-column accepted'>
+                        <div className='ticket-column accepted'
+                            onDragOver={(e) => handleOnDragOver(e)}
+                            onDrop={(e) => handleOnDrop(e, TicketStatus.ACCEPTED)}
+                        >
                             {
-                                allTickets.map((ticket: TicketInterface) =>
-                                    ticket['status'] == 'accepted' && <TicketItem key={ticket['id']} ticket={ticket} onEdit={handleEditTicket} />
+                                allTickets
+                                    .filter((ticket: TicketInterface) => ticket['status'] == TicketStatus.ACCEPTED)
+                                    .map((ticket: TicketInterface) =>
+                                        <TicketItem key={ticket['id']} ticket={ticket} onEdit={handleEditTicket} />
                                 )
                             }
                         </div>
@@ -163,10 +190,15 @@ function Ticket() {
                                     Add item
                             </Button>
                         </h3>
-                        <div className='ticket-column resolved'>
+                        <div className='ticket-column resolved'
+                            onDragOver={(e) => handleOnDragOver(e)}
+                            onDrop={(e) => handleOnDrop(e, TicketStatus.RESOLVED)}
+                        >
                             {
-                                allTickets.map((ticket: TicketInterface) =>
-                                    ticket['status'] == 'resolved' && <TicketItem key={ticket['id']} ticket={ticket} onEdit={handleEditTicket} />
+                                allTickets
+                                    .filter((ticket: TicketInterface) => ticket['status'] == TicketStatus.RESOLVED)
+                                    .map((ticket: TicketInterface) =>
+                                        <TicketItem key={ticket['id']} ticket={ticket} onEdit={handleEditTicket} />
                                 )
                             }
                         </div>
@@ -183,10 +215,15 @@ function Ticket() {
                                     Add item
                             </Button>
                         </h3>
-                        <div className='ticket-column rejected'>
+                        <div className='ticket-column rejected'
+                            onDragOver={(e) => handleOnDragOver(e)}
+                            onDrop={(e) => handleOnDrop(e, TicketStatus.REJECTED)}
+                        >
                             {
-                                allTickets.map((ticket: TicketInterface) =>
-                                    ticket['status'] == 'rejected' && <TicketItem key={ticket['id']} ticket={ticket} onEdit={handleEditTicket} />
+                                allTickets
+                                    .filter((ticket: TicketInterface) => ticket['status'] == TicketStatus.REJECTED)
+                                    .map((ticket: TicketInterface) =>
+                                        <TicketItem key={ticket['id']} ticket={ticket} onEdit={handleEditTicket} />
                                 )
                             }
                         </div>

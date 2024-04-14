@@ -6,6 +6,11 @@ export const collections: { tickets?: mongoDB.Collection } = {}
 export async function connectToDatabase() {
     dotenv.config();
 
+    // Ensure process.env variables are defined
+    if (!process.env.DB_CONN_STRING || !process.env.TICKETS_COLLECTION_NAME) {
+        throw new Error('Environment variables are not properly configured.');
+    }
+
     const client: mongoDB.MongoClient = new mongoDB.MongoClient(process.env.DB_CONN_STRING);
 
     await client.connect();

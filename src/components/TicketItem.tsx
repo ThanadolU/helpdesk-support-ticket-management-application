@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Button } from 'antd';
 import { TicketInterface } from '../interfaces/Ticket';
 
@@ -8,10 +8,23 @@ function TicketItem({ ticket, onEdit }: { ticket: TicketInterface, onEdit: (tick
         return new Date(date);
     }
 
+    // function handleOnDrag(e: React.DragEvent, name: string) {
+    //     e.dataTransfer.setData("name", name);
+    // }
+    const handleDragStart = (e: React.DragEvent) => {
+        // e.preventDefault()
+        e.dataTransfer.setData('ticket', JSON.stringify(ticket));
+    };
+
     let createdTimeStamp = getDate(ticket['createdTimeStamp']);
     let latestUpdateTimeStamp = getDate(ticket['latestUpdateTimeStamp']);
     return (
-        <div className='ticket'>
+        <div className='ticket' 
+            draggable 
+            onDragStart={(e) => {
+                handleDragStart(e);
+            }}
+        >
             <h4>
                 {ticket['title']}
                 <Button className='edit-button' onClick={() => onEdit(ticket)}>Edit</Button>
