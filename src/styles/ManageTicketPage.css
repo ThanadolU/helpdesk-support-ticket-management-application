@@ -38,8 +38,14 @@
     margin-left: 1vw;
     margin-right: 1vw;
     height: 66vh;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
     overflow-y: scroll;
     background-color: azure;
+}
+
+.ticket-board .ticket-column::-webkit-scrollbar {
+    display: none;
 }
 
 /* .add-ticket .body {
