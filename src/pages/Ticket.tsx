@@ -21,6 +21,12 @@ function Ticket() {
     const [contactInformation, setContactInformation] = useState<string>("");
     const [status, setStatus] = useState<string>("");
 
+    const sortedTickets = allTickets.sort((a:TicketInterface, b:TicketInterface) => {
+        const dateA = new Date(a.latestUpdateTimeStamp).getTime();
+        const dateB = new Date(b.latestUpdateTimeStamp).getTime();
+        return dateB - dateA; // Compare dates in descending order
+    })
+
     const showAddTicketModal = () => {
         setIsAddTicketModalOpen(true);
     };
@@ -101,7 +107,7 @@ function Ticket() {
 
         const droppedTicket = JSON.parse(e.dataTransfer.getData('ticket'));
         // Update the status of the dropped ticket
-        const updatedTickets = allTickets.filter((ticket) => ticket.id !== droppedTicket.id);
+        const updatedTickets = sortedTickets.filter((ticket) => ticket.id !== droppedTicket.id);
 
         // Update the status of the dropped ticket
         droppedTicket['status'] = status;
@@ -129,8 +135,8 @@ function Ticket() {
                 <h1>Helpdesk Ticket Management</h1>
                 <div className='ticket-board'>
                     <div className='column'>
-                        <h3>
-                            Pending
+                        <div className='column-header'>
+                            <h3>Pending</h3>
                             <Button className='add-item' 
                                 onClick={() => {
                                     setIsAddTicketModalOpen(true); 
@@ -139,13 +145,13 @@ function Ticket() {
                                 type='primary'>
                                     Add item
                             </Button>
-                        </h3>
+                        </div>
                         <div className='ticket-column pending' 
                             onDragOver={(e) => handleOnDragOver(e)} 
                             onDrop={(e) => handleOnDrop(e, TicketStatus.PENDING)}
                         >
                             {
-                                allTickets
+                                sortedTickets
                                     .filter((ticket: TicketInterface) => ticket['status'] == TicketStatus.PENDING)
                                     .map((ticket: TicketInterface) =>
                                         <TicketItem key={ticket['id']} ticket={ticket} onEdit={handleEditTicket} />
@@ -154,8 +160,8 @@ function Ticket() {
                         </div>
                     </div>
                     <div className='column'>
-                        <h3>
-                            Accepted
+                        <div className='column-header'>
+                            <h3>Accepted</h3>
                             <Button className='add-item' 
                                 onClick={() => {
                                     setIsAddTicketModalOpen(true); 
@@ -164,13 +170,13 @@ function Ticket() {
                                 type='primary'>
                                     Add item
                             </Button>
-                        </h3>
+                        </div>
                         <div className='ticket-column accepted'
                             onDragOver={(e) => handleOnDragOver(e)}
                             onDrop={(e) => handleOnDrop(e, TicketStatus.ACCEPTED)}
                         >
                             {
-                                allTickets
+                                sortedTickets
                                     .filter((ticket: TicketInterface) => ticket['status'] == TicketStatus.ACCEPTED)
                                     .map((ticket: TicketInterface) =>
                                         <TicketItem key={ticket['id']} ticket={ticket} onEdit={handleEditTicket} />
@@ -179,8 +185,8 @@ function Ticket() {
                         </div>
                     </div>
                     <div className='column'>
-                        <h3>
-                            Resolved
+                        <div className='column-header'>
+                            <h3>Resolved</h3>
                             <Button className='add-item' 
                                 onClick={() => {
                                     setIsAddTicketModalOpen(true); 
@@ -189,13 +195,13 @@ function Ticket() {
                                 type='primary'>
                                     Add item
                             </Button>
-                        </h3>
+                        </div>
                         <div className='ticket-column resolved'
                             onDragOver={(e) => handleOnDragOver(e)}
                             onDrop={(e) => handleOnDrop(e, TicketStatus.RESOLVED)}
                         >
                             {
-                                allTickets
+                                sortedTickets
                                     .filter((ticket: TicketInterface) => ticket['status'] == TicketStatus.RESOLVED)
                                     .map((ticket: TicketInterface) =>
                                         <TicketItem key={ticket['id']} ticket={ticket} onEdit={handleEditTicket} />
@@ -204,8 +210,8 @@ function Ticket() {
                         </div>
                     </div>
                     <div className='column'>
-                        <h3>
-                            Rejected
+                        <div className='column-header'>
+                            <h3>Rejected</h3>
                             <Button className='add-item' 
                                 onClick={() => {
                                     setIsAddTicketModalOpen(true); 
@@ -214,13 +220,13 @@ function Ticket() {
                                 type='primary'>
                                     Add item
                             </Button>
-                        </h3>
+                        </div>
                         <div className='ticket-column rejected'
                             onDragOver={(e) => handleOnDragOver(e)}
                             onDrop={(e) => handleOnDrop(e, TicketStatus.REJECTED)}
                         >
                             {
-                                allTickets
+                                sortedTickets
                                     .filter((ticket: TicketInterface) => ticket['status'] == TicketStatus.REJECTED)
                                     .map((ticket: TicketInterface) =>
                                         <TicketItem key={ticket['id']} ticket={ticket} onEdit={handleEditTicket} />
