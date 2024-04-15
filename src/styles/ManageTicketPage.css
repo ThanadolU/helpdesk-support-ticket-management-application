@@ -139,7 +139,11 @@
     width: 260px;
     /* height: 150px; */
     background-color: whitesmoke;
-    /* cursor: move; */
+    cursor: grab;
+}
+
+.ticket-column .ticket:active {
+    cursor: grabbing;
 }
 
 .ticket-column .ticket .ticket-header {
