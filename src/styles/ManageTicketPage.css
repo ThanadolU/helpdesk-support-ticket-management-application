@@ -1,17 +1,25 @@
 .add-ticket {
     /* margin-left: auto;
-    margin-right: auto; 
-    */
+    margin-right: auto;  */
+   
     /* margin: 0 auto; */
-    margin-left: 1vw;
-    width: 90vw;
+    margin-left: 3.5vw;
+    margin-right: 3.5vw;
+    /* width: 90vw; */
     /* height: 82vh; */
     /* background-color: aliceblue; */
+    /* justify-items: center; */
+    /* border: 1px solid black; */
 }
 
 .add-ticket .ticket-board {
-    width: 1400px;
+    width: 90vw;
     display: flex;
+    /* text-align: center; */
+    /* border: 1px solid black; */
+    margin-left: auto;
+    margin-right: auto;
+    /* border: 1px solid black; */
 }
 
 .add-ticket h1 {
