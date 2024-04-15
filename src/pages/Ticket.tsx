@@ -117,6 +117,14 @@ function Ticket() {
         editTicket(droppedTicket.id, droppedTicket.title, droppedTicket.description, droppedTicket.contactInfo, status)
     }
 
+    const renderTickets = (status: string) => {
+        return sortedTickets
+            .filter((ticket: TicketInterface) => ticket['status'] == status)
+            .map((ticket: TicketInterface) =>
+                <TicketItem key={ticket['id']} ticket={ticket} onEdit={handleEditTicket} />
+            );
+    };
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -150,13 +158,7 @@ function Ticket() {
                             onDragOver={(e) => handleOnDragOver(e)} 
                             onDrop={(e) => handleOnDrop(e, TicketStatus.PENDING)}
                         >
-                            {
-                                sortedTickets
-                                    .filter((ticket: TicketInterface) => ticket['status'] == TicketStatus.PENDING)
-                                    .map((ticket: TicketInterface) =>
-                                        <TicketItem key={ticket['id']} ticket={ticket} onEdit={handleEditTicket} />
-                                )
-                            }
+                            {renderTickets(TicketStatus.PENDING)}
                         </div>
                     </div>
                     <div className='column'>
@@ -175,13 +177,7 @@ function Ticket() {
                             onDragOver={(e) => handleOnDragOver(e)}
                             onDrop={(e) => handleOnDrop(e, TicketStatus.ACCEPTED)}
                         >
-                            {
-                                sortedTickets
-                                    .filter((ticket: TicketInterface) => ticket['status'] == TicketStatus.ACCEPTED)
-                                    .map((ticket: TicketInterface) =>
-                                        <TicketItem key={ticket['id']} ticket={ticket} onEdit={handleEditTicket} />
-                                )
-                            }
+                            {renderTickets(TicketStatus.ACCEPTED)}
                         </div>
                     </div>
                     <div className='column'>
@@ -200,13 +196,7 @@ function Ticket() {
                             onDragOver={(e) => handleOnDragOver(e)}
                             onDrop={(e) => handleOnDrop(e, TicketStatus.RESOLVED)}
                         >
-                            {
-                                sortedTickets
-                                    .filter((ticket: TicketInterface) => ticket['status'] == TicketStatus.RESOLVED)
-                                    .map((ticket: TicketInterface) =>
-                                        <TicketItem key={ticket['id']} ticket={ticket} onEdit={handleEditTicket} />
-                                )
-                            }
+                            {renderTickets(TicketStatus.RESOLVED)}
                         </div>
                     </div>
                     <div className='column'>
@@ -225,13 +215,7 @@ function Ticket() {
                             onDragOver={(e) => handleOnDragOver(e)}
                             onDrop={(e) => handleOnDrop(e, TicketStatus.REJECTED)}
                         >
-                            {
-                                sortedTickets
-                                    .filter((ticket: TicketInterface) => ticket['status'] == TicketStatus.REJECTED)
-                                    .map((ticket: TicketInterface) =>
-                                        <TicketItem key={ticket['id']} ticket={ticket} onEdit={handleEditTicket} />
-                                )
-                            }
+                            {renderTickets(TicketStatus.REJECTED)}
                         </div>
                     </div>
                 </div>
@@ -260,72 +244,6 @@ function Ticket() {
                     setStatus={setStatus}
                     handleEditSubmit={handleEditTicketSubmit}
                 />
-                {/* <Modal open={isAddTicketModalOpen} onOk={handleAddTicketSubmit} onCancel={handleAddTicketCancel} footer={null}>
-                    <h1 className='title'>Add New Ticket</h1>
-                    <div className='body'>
-                        <label>
-                            <span>Title:</span>
-                            <Input
-                                className='input'
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
-                            />
-                        </label>
-                        <label>
-                            <span>Description:</span>
-                            <TextArea
-                                className='input'
-                                value={description}
-                                onChange={(e) => setDescription(e.target.value)}
-                            />
-                        </label>
-                        <label>
-                            <span>Contact Information:</span>
-                            <TextArea
-                                className='input'
-                                value={contactInformation}
-                                onChange={(e) => setContactInformation(e.target.value)}
-                            />
-                        </label>
-                    </div>
-                </Modal> */}
-                {/* <Modal open={isEditTicketModalOpen} onOk={handleEditTicketSubmit} onCancel={handleEditTicketCancel}>
-                    <h1 className='title'>Edit Ticket</h1>
-                    <div className='body'>
-                        <label>
-                            <span>Title:</span>
-                            <Input
-                                className='input'
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
-                            />
-                        </label>
-                        <label>
-                            <span>Description:</span>
-                            <TextArea
-                                className='input'
-                                value={description}
-                                onChange={(e) => setDescription(e.target.value)}
-                            />
-                        </label>
-                        <label>
-                            <span>Contact Information:</span>
-                            <TextArea
-                                className='input'
-                                value={contactInformation}
-                                onChange={(e) => setContactInformation(e.target.value)}
-                            />
-                        </label>
-                        <label>
-                            <span>Status</span>
-                            <TextArea
-                                className='input'
-                                value={status}
-                                onChange={(e) => setStatus(e.target.value)}
-                            />
-                        </label>
-                    </div>
-                </Modal> */}
             </div>
         </>
     )
