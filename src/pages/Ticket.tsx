@@ -21,6 +21,7 @@ function Ticket() {
     const [contactInformation, setContactInformation] = useState<string>("");
     const [status, setStatus] = useState<string>("");
     const [dropIndicator, setDropIndicator] = useState<string | null>(null);
+    const [sortMode, setSortMode] = useState<"asc" | "desc">("asc");
 
     const fetchData = async () => {
         try {
@@ -36,16 +37,22 @@ function Ticket() {
 
         const interval = setInterval(() => {
             fetchData(); // Fetch data periodically
-        }, 1000); // Fetch data every 1 minute (adjust this interval as needed)
+        }, 5000); // Fetch data every 1 minute (adjust this interval as needed)
     
         return () => clearInterval(interval); // Clean up interval on component unmount
     }, []);
 
-    const sortedTickets = allTickets.sort((a:TicketInterface, b:TicketInterface) => {
-        const dateA = new Date(a.latestUpdateTimeStamp).getTime();
-        const dateB = new Date(b.latestUpdateTimeStamp).getTime();
-        return dateB - dateA; // Compare dates in descending order
-    })
+    const sortedTickets = (sortMode: 'asc' | 'desc') => {
+        return allTickets.sort((a:TicketInterface, b:TicketInterface) => {
+            const dateA = new Date(a.latestUpdateTimeStamp).getTime();
+            const dateB = new Date(b.latestUpdateTimeStamp).getTime();
+            if (sortMode === 'desc') {
+                return dateB - dateA; // Compare dates in descending order
+            } else {
+                return dateA - dateB; // Compare dates in ascending order
+            }
+        });
+    }
 
     const showAddTicketModal = () => {
         setIsAddTicketModalOpen(true);
@@ -130,7 +137,7 @@ function Ticket() {
 
         const droppedTicket = JSON.parse(e.dataTransfer.getData('ticket'));
         // Update the status of the dropped ticket
-        const updatedTickets = sortedTickets.filter((ticket) => ticket.id !== droppedTicket.id);
+        const updatedTickets = sortedTickets('asc').filter((ticket) => ticket.id !== droppedTicket.id);
 
         // Update the status of the dropped ticket
         droppedTicket['status'] = status;
@@ -146,8 +153,8 @@ function Ticket() {
         setDropIndicator(null);
     }
 
-    const renderTickets = (status: string) => {
-        return sortedTickets
+    const renderTickets = (status: string, sortMode: 'asc' | 'desc') => {
+        return sortedTickets(sortMode)
             .filter((ticket: TicketInterface) => ticket['status'] == status)
             .map((ticket: TicketInterface) =>
                 <TicketItem 
@@ -170,13 +177,27 @@ function Ticket() {
                         <div className='color-bar pending'></div>
                         <div className='column-header'>
                             <h3>Pending</h3>
+                            <Button className='asc' 
+                                onClick={() => {
+                                    setSortMode('asc');
+                                    fetchData();
+                            }}>
+                                Asc
+                            </Button>
+                            <Button className='desc'
+                                onClick={() => {
+                                    setSortMode('desc');
+                                    fetchData();
+                            }}>
+                                Desc
+                            </Button>
                             <Button className='add-item' 
                                 onClick={() => {
                                     setIsAddTicketModalOpen(true); 
                                     setStatus(TicketStatus.PENDING);
                                     }} 
                                 type='primary'>
-                                    Add item
+                                Add item
                             </Button>
                         </div>
                         <div className='ticket-column pending' 
@@ -184,20 +205,34 @@ function Ticket() {
                             onDrop={(e) => handleOnDrop(e, TicketStatus.PENDING)}
                             style={{backgroundColor: dropIndicator === status ? "#ebf8ff" : ""}}
                         >
-                            {renderTickets(TicketStatus.PENDING)}
+                            {renderTickets(TicketStatus.PENDING, sortMode)}
                         </div>
                     </div>
                     <div className='column'>
                         <div className='color-bar accepted'></div>
                         <div className='column-header'>
                             <h3>Accepted</h3>
+                            <Button className='asc' 
+                                onClick={() => {
+                                    setSortMode('asc');
+                                    fetchData();
+                            }}>
+                                Asc
+                            </Button>
+                            <Button className='desc'
+                                onClick={() => {
+                                    setSortMode('desc');
+                                    fetchData();
+                            }}>
+                                Desc
+                            </Button>
                             <Button className='add-item' 
                                 onClick={() => {
                                     setIsAddTicketModalOpen(true); 
                                     setStatus(TicketStatus.ACCEPTED);
                                     }} 
                                 type='primary'>
-                                    Add item
+                                Add item
                             </Button>
                         </div>
                         <div className='ticket-column accepted'
@@ -205,20 +240,34 @@ function Ticket() {
                             onDrop={(e) => handleOnDrop(e, TicketStatus.ACCEPTED)}
                             style={{backgroundColor: dropIndicator === status ? "#ebf8ff" : ""}}
                         >
-                            {renderTickets(TicketStatus.ACCEPTED)}
+                            {renderTickets(TicketStatus.ACCEPTED, sortMode)}
                         </div>
                     </div>
                     <div className='column'>
                         <div className='color-bar resolved'></div>
                         <div className='column-header'>
                             <h3>Resolved</h3>
+                            <Button className='asc' 
+                                onClick={() => {
+                                    setSortMode('asc');
+                                    fetchData();
+                            }}>
+                                Asc
+                            </Button>
+                            <Button className='desc'
+                                onClick={() => {
+                                    setSortMode('desc');
+                                    fetchData();
+                            }}>
+                                Desc
+                            </Button>
                             <Button className='add-item' 
                                 onClick={() => {
                                     setIsAddTicketModalOpen(true); 
                                     setStatus(TicketStatus.RESOLVED);
                                     }} 
                                 type='primary'>
-                                    Add item
+                                Add item
                             </Button>
                         </div>
                         <div className='ticket-column resolved'
@@ -226,20 +275,34 @@ function Ticket() {
                             onDrop={(e) => handleOnDrop(e, TicketStatus.RESOLVED)}
                             style={{backgroundColor: dropIndicator === status ? "#ebf8ff" : ""}}
                         >
-                            {renderTickets(TicketStatus.RESOLVED)}
+                            {renderTickets(TicketStatus.RESOLVED, sortMode)}
                         </div>
                     </div>
                     <div className='column'>
                         <div className='color-bar rejected'></div>
                         <div className='column-header'>
                             <h3>Rejected</h3>
+                            <Button className='asc' 
+                                onClick={() => {
+                                    setSortMode('asc');
+                                    fetchData();
+                            }}>
+                                Asc
+                            </Button>
+                            <Button className='desc'
+                                onClick={() => {
+                                    setSortMode('desc');
+                                    fetchData();
+                            }}>
+                                Desc
+                            </Button>
                             <Button className='add-item' 
                                 onClick={() => {
                                     setIsAddTicketModalOpen(true); 
                                     setStatus(TicketStatus.REJECTED);
                                     }} 
                                 type='primary'>
-                                    Add item
+                                Add item
                             </Button>
                         </div>
                         <div className='ticket-column rejected'
@@ -247,7 +310,7 @@ function Ticket() {
                             onDrop={(e) => handleOnDrop(e, TicketStatus.REJECTED)}
                             style={{backgroundColor: dropIndicator === status ? "#ebf8ff" : ""}}
                         >
-                            {renderTickets(TicketStatus.REJECTED)}
+                            {renderTickets(TicketStatus.REJECTED, sortMode)}
                         </div>
                     </div>
                 </div>
