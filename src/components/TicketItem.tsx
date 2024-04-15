@@ -8,6 +8,10 @@ function TicketItem({ ticket, status, onEdit, dropIndicator, setDropIndicator }:
         return new Date(date);
     }
 
+    function formatTime(unit:number) {
+        return unit < 10 ? '0' + unit : unit;
+    }
+
     const handleDragStart = (e: React.DragEvent) => {
         e.dataTransfer.setData('ticket', JSON.stringify(ticket));
     };
@@ -42,13 +46,13 @@ function TicketItem({ ticket, status, onEdit, dropIndicator, setDropIndicator }:
                     Created Date: {createdTimeStamp ? createdTimeStamp.toLocaleDateString() : ''}
                 </p>
                 <p>
-                    Created Time: {createdTimeStamp.getHours()}:{createdTimeStamp.getMinutes()}:{createdTimeStamp.getSeconds()}
+                    Created Time: {formatTime(createdTimeStamp.getHours())}:{formatTime(createdTimeStamp.getMinutes())}:{formatTime(createdTimeStamp.getSeconds())}
                 </p>
                 <p>
                     Latest Update Date: {latestUpdateTimeStamp ? latestUpdateTimeStamp.toLocaleDateString() : ''}
                 </p>
                 <p>
-                    Latest Update Time: {latestUpdateTimeStamp.getHours()}:{latestUpdateTimeStamp.getMinutes()}:{latestUpdateTimeStamp.getSeconds()}
+                    Latest Update Time: {formatTime(latestUpdateTimeStamp.getHours())}:{formatTime(latestUpdateTimeStamp.getMinutes())}:{formatTime(latestUpdateTimeStamp.getSeconds())}
                 </p>
             </div>
         </div>

@@ -29,6 +29,33 @@
     margin-left: 2vw;
 }
 
+.ticket-board .column .color-bar {
+    position: relative;
+    /* width: 10px; */
+    height: 5px;
+    margin-left: 0.1vw;
+    margin-right: 0.1vw;
+    margin-top: 0.06vh;
+    border-radius: 20px 20px 0 0;
+    /* border: 1px solid; */
+}
+
+.pending {
+    background-color: #ffc107;
+}
+
+.accepted {
+    background-color: #28a745;
+}
+
+.resolved {
+    background-color: #007bff;
+}
+
+.rejected {
+    background-color: #dc3545;
+}
+
 .ticket-board .column-header {
     /* border: 1px solid; */
     margin-top: 1vh;
@@ -43,6 +70,7 @@
 .add-ticket .column {
     width: 30vw;
     height: 78vh;
+    border-radius: 2%;
     margin-left: 1vw;
     margin-right: 1vw;
     background-color: white;

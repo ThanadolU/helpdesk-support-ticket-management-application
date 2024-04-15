@@ -161,6 +161,7 @@ function Ticket() {
                 <h1>Helpdesk Ticket Management</h1>
                 <div className='ticket-board'>
                     <div className='column'>
+                        <div className='color-bar pending'></div>
                         <div className='column-header'>
                             <h3>Pending</h3>
                             <Button className='add-item' 
@@ -181,6 +182,7 @@ function Ticket() {
                         </div>
                     </div>
                     <div className='column'>
+                        <div className='color-bar accepted'></div>
                         <div className='column-header'>
                             <h3>Accepted</h3>
                             <Button className='add-item' 
@@ -201,6 +203,7 @@ function Ticket() {
                         </div>
                     </div>
                     <div className='column'>
+                        <div className='color-bar resolved'></div>
                         <div className='column-header'>
                             <h3>Resolved</h3>
                             <Button className='add-item' 
@@ -221,6 +224,7 @@ function Ticket() {
                         </div>
                     </div>
                     <div className='column'>
+                        <div className='color-bar rejected'></div>
                         <div className='column-header'>
                             <h3>Rejected</h3>
                             <Button className='add-item' 
