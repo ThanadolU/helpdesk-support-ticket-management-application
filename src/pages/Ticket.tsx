@@ -36,7 +36,7 @@ function Ticket() {
 
         const interval = setInterval(() => {
             fetchData(); // Fetch data periodically
-        }, 1000); // Fetch data every 1 minute (adjust this interval as needed)
+        }, 100); // Fetch data every 1 minute (adjust this interval as needed)
     
         return () => clearInterval(interval); // Clean up interval on component unmount
     }, []);
