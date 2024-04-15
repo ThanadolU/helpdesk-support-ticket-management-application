@@ -2,18 +2,19 @@ import React, { useState } from 'react'
 import { Button } from 'antd';
 import { TicketInterface } from '../interfaces/Ticket';
 
-function TicketItem({ ticket, onEdit }: { ticket: TicketInterface, onEdit: (ticket: TicketInterface) => void }) {
+function TicketItem({ ticket, status, onEdit, dropIndicator, setDropIndicator }: { ticket: TicketInterface, status: string, onEdit: (ticket: TicketInterface) => void, dropIndicator: string | null, setDropIndicator: React.Dispatch<React.SetStateAction<string | null>> }) {
 
     const getDate = (date: Date) => {
         return new Date(date);
     }
 
-    // function handleOnDrag(e: React.DragEvent, name: string) {
-    //     e.dataTransfer.setData("name", name);
-    // }
     const handleDragStart = (e: React.DragEvent) => {
-        // e.preventDefault()
         e.dataTransfer.setData('ticket', JSON.stringify(ticket));
+    };
+
+    const handleDragEnd = (e: React.DragEvent<HTMLDivElement>) => {
+        e.dataTransfer.clearData();
+        setDropIndicator(null);
     };
 
     let createdTimeStamp = getDate(ticket['createdTimeStamp']);
@@ -24,26 +25,32 @@ function TicketItem({ ticket, onEdit }: { ticket: TicketInterface, onEdit: (tick
             onDragStart={(e) => {
                 handleDragStart(e);
             }}
+            onDragEnd={(e) => {
+                handleDragEnd(e);
+            }}
+            style={{backgroundColor: dropIndicator === status ? "#90CAF9" : ""}}
         >
             <div className='ticket-header'>
                 <h4>{ticket['title']}</h4>
                 <Button className='edit-button' onClick={() => onEdit(ticket)}>Edit</Button>
             </div>
-            <p>Description: {ticket['description']}</p>
-            <p>Contact Information: {ticket['contactInfo']}</p>
-            <p>Status: {ticket['status']}</p>
-            <p>
-                Created Date: {createdTimeStamp ? createdTimeStamp.toLocaleDateString() : ''}
-            </p>
-            <p>
-                Created Time: {createdTimeStamp.getHours()}:{createdTimeStamp.getMinutes()}:{createdTimeStamp.getSeconds()}
-            </p>
-            <p>
-                Latest Update Date: {latestUpdateTimeStamp ? latestUpdateTimeStamp.toLocaleDateString() : ''}
-            </p>
-            <p>
-                Latest Update Time: {latestUpdateTimeStamp.getHours()}:{latestUpdateTimeStamp.getMinutes()}:{latestUpdateTimeStamp.getSeconds()}
-            </p>
+            <div className='ticket-body'>
+                <p>Description: {ticket['description']}</p>
+                <p>Contact Information: {ticket['contactInfo']}</p>
+                <p>Status: {ticket['status']}</p>
+                <p>
+                    Created Date: {createdTimeStamp ? createdTimeStamp.toLocaleDateString() : ''}
+                </p>
+                <p>
+                    Created Time: {createdTimeStamp.getHours()}:{createdTimeStamp.getMinutes()}:{createdTimeStamp.getSeconds()}
+                </p>
+                <p>
+                    Latest Update Date: {latestUpdateTimeStamp ? latestUpdateTimeStamp.toLocaleDateString() : ''}
+                </p>
+                <p>
+                    Latest Update Time: {latestUpdateTimeStamp.getHours()}:{latestUpdateTimeStamp.getMinutes()}:{latestUpdateTimeStamp.getSeconds()}
+                </p>
+            </div>
         </div>
     )
 }

@@ -20,6 +20,20 @@ function Ticket() {
     const [description, setDescription] = useState<string>("");
     const [contactInformation, setContactInformation] = useState<string>("");
     const [status, setStatus] = useState<string>("");
+    const [dropIndicator, setDropIndicator] = useState<string | null>(null);
+
+    const fetchData = async () => {
+        try {
+            const tickets = await getAllTickets();
+            setAllTickets(tickets);
+        } catch (error) {
+            console.error('Error fetching tickets:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
 
     const sortedTickets = allTickets.sort((a:TicketInterface, b:TicketInterface) => {
         const dateA = new Date(a.latestUpdateTimeStamp).getTime();
@@ -40,6 +54,7 @@ function Ticket() {
                 text: "Adding new ticket successful",
                 icon: "success"
             })
+            fetchData();
         } else {
             Swal.fire({
                 title: "Error add new ticket",
@@ -70,6 +85,7 @@ function Ticket() {
                 text: "Updating ticket successful",
                 icon: "success"
             })
+            fetchData();
         } else {
             Swal.fire({
                 title: "Error update ticket",
@@ -100,6 +116,7 @@ function Ticket() {
 
     function handleOnDragOver(e: React.DragEvent) {
         e.preventDefault();
+        setDropIndicator(e.currentTarget.id);
     }
 
     function handleOnDrop(e: React.DragEvent, status: string) {
@@ -112,30 +129,31 @@ function Ticket() {
         // Update the status of the dropped ticket
         droppedTicket['status'] = status;
       
+        editTicket(droppedTicket.id, droppedTicket.title, droppedTicket.description, droppedTicket.contactInfo, status)
+
         // Update the state with the new set of tickets
         setAllTickets([...updatedTickets, droppedTicket]);
-        editTicket(droppedTicket.id, droppedTicket.title, droppedTicket.description, droppedTicket.contactInfo, status)
+
+        // setAllTickets((prevTickets) =>
+        //     prevTickets?.map((_ticket) => (_ticket['id'] == droppedTicket['id'] ? droppedTicket : _ticket))
+        // )
+        setDropIndicator(null);
     }
 
     const renderTickets = (status: string) => {
         return sortedTickets
             .filter((ticket: TicketInterface) => ticket['status'] == status)
             .map((ticket: TicketInterface) =>
-                <TicketItem key={ticket['id']} ticket={ticket} onEdit={handleEditTicket} />
+                <TicketItem 
+                    key={ticket['id']} 
+                    ticket={ticket}
+                    status={status}
+                    onEdit={handleEditTicket} 
+                    dropIndicator={dropIndicator} 
+                    setDropIndicator={setDropIndicator}
+                />
             );
     };
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const tickets = await getAllTickets();
-                setAllTickets(tickets);
-            } catch (error) {
-                console.error('Error fetching tickets:', error);
-            }
-        };
-        fetchData();
-    });
 
     return (
         <>
@@ -157,6 +175,7 @@ function Ticket() {
                         <div className='ticket-column pending' 
                             onDragOver={(e) => handleOnDragOver(e)} 
                             onDrop={(e) => handleOnDrop(e, TicketStatus.PENDING)}
+                            style={{backgroundColor: dropIndicator === status ? "#ebf8ff" : ""}}
                         >
                             {renderTickets(TicketStatus.PENDING)}
                         </div>
@@ -176,6 +195,7 @@ function Ticket() {
                         <div className='ticket-column accepted'
                             onDragOver={(e) => handleOnDragOver(e)}
                             onDrop={(e) => handleOnDrop(e, TicketStatus.ACCEPTED)}
+                            style={{backgroundColor: dropIndicator === status ? "#ebf8ff" : ""}}
                         >
                             {renderTickets(TicketStatus.ACCEPTED)}
                         </div>
@@ -195,6 +215,7 @@ function Ticket() {
                         <div className='ticket-column resolved'
                             onDragOver={(e) => handleOnDragOver(e)}
                             onDrop={(e) => handleOnDrop(e, TicketStatus.RESOLVED)}
+                            style={{backgroundColor: dropIndicator === status ? "#ebf8ff" : ""}}
                         >
                             {renderTickets(TicketStatus.RESOLVED)}
                         </div>
@@ -214,6 +235,7 @@ function Ticket() {
                         <div className='ticket-column rejected'
                             onDragOver={(e) => handleOnDragOver(e)}
                             onDrop={(e) => handleOnDrop(e, TicketStatus.REJECTED)}
+                            style={{backgroundColor: dropIndicator === status ? "#ebf8ff" : ""}}
                         >
                             {renderTickets(TicketStatus.REJECTED)}
                         </div>
