@@ -8,7 +8,7 @@ export const editTicket = async (id: string, title: string, description: string,
             title: title,
             description: description,
             contactInfo: contactInfo,
-            status: status,
+            status: status.trim().toLowerCase(),
             latestUpdateTimeStamp: updatedTimeStamp
         }
     ).then((response) => {

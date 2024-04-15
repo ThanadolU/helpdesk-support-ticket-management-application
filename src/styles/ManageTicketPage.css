@@ -2,13 +2,15 @@
     /* margin-left: auto;
     margin-right: auto; 
     */
-    margin: 0 auto;
+    /* margin: 0 auto; */
+    margin-left: 1vw;
     width: 90vw;
     /* height: 82vh; */
     /* background-color: aliceblue; */
 }
 
 .add-ticket .ticket-board {
+    width: 1400px;
     display: flex;
 }
 
@@ -97,13 +99,21 @@
     /* padding-right: 1vw; */
     border-radius: 5%;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    width: 16vw;
+    /* width: 16vw; */
+    width: 260px;
+    /* height: 150px; */
     background-color: whitesmoke;
     /* cursor: move; */
 }
 
 .ticket-column .ticket .ticket-header {
     display: flex;
+    align-items: center;
+}
+
+.ticket-column .ticket .ticket-body {
+    /* display: flex; */
+    /* height: 100px; */
     align-items: center;
 }
 
